@@ -35,7 +35,7 @@
 <script language="javascript" src="lib/kindeditor/kindeditor.js"></script>
 <script language="javascript" src="lib/kindeditor/lang/zh_CN.js"></script>
 
-<title><?php echo $data['description'].' '.$data_cate['name'].' '. mb_strlen($data['answer'], 'UTF-8')."个字"?> 疯狂猜图 答案查询 答案大全</title>
+<title><?php echo $data['description'].' '.$data_cate['name'].' '. mb_strlen($data['answer'], MB_ENCODING)."个字"?> 疯狂猜图 答案查询 答案大全</title>
 </head>
 
 <body>
@@ -64,10 +64,11 @@
 			<div class="answer">
 				<ul>
 				<?php 
-					$len = mb_strlen($data['answer']);
+					$len = mb_strlen($data['answer'], MB_ENCODING);
+					
 					for($i=0;$i<$len;$i++)
 					{
-						echo '<li>'. mb_substr($data['answer'], $i, 1) . '</li>';
+						echo '<li>'. mb_substr($data['answer'], $i, 1, MB_ENCODING) . '</li>';
 					}
 				?>
 				</ul>
@@ -80,7 +81,7 @@
 		<!--footer-->
 		<div class="grid_12 footer">
 			<div>
-				<span>关键字：<?php echo $data['description'].' '.$data_cate['name'].' '. mb_strlen($data['answer'], 'UTF-8')."个字"?> 疯狂猜图 答案查询 答案大全</span>
+				<span>关键字：<?php echo $data['description'].' '.$data_cate['name'].' '. mb_strlen($data['answer'], MB_ENCODING)."个字"?> 疯狂猜图 答案查询 答案大全</span>
 			</div>
 			<div class="copyright">
 				<span>©2013 <a href="http://hahaku.net">哈哈库</a><span>
