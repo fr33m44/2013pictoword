@@ -1,8 +1,16 @@
+body{
+	background:#EDEDED;
+}
+li.selected{
+	font-weight:bold;
+	border:1px solid #000000;
+}
 a{
 	color:#0000ff;
 }
 a:hover{
-	color:#9fee00;
+	color:#0000ff;
+	font-weight:bold;
 }
 .header{
 	background-image:url("bg.jpg");
@@ -53,8 +61,10 @@ a:hover{
 	display:inline;
 	margin-left:10px;
 }
-.piclist{
-	
+.search table ul li{
+	list-style-type:none;
+	display:inline;
+	margin-left:10px;
 }
 .piclist ul li{
 	list-style-type:none;
@@ -95,6 +105,7 @@ a:hover{
 	position: relative;
 	margin-top: 0.5em;
 	left: 39%;
+	height:3em;
 }
 .answer ul li{
 	list-style-type:none;

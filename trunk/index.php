@@ -1,4 +1,8 @@
 <?php 
+function uri($catid, $wc, $kw)
+{
+	return "index.php?catid=$catid&wc=$wc&kw=$kw";
+}
 	//连接数据库
 	require_once 'conn.php';
 	//start session
@@ -8,16 +12,50 @@
 	$kw = str_replace('"', '&quot;', $kw);
 	$kw = str_replace('<', '&lt;', $kw);
 	$kw = str_replace('>', '&gt;', $kw);
-	isset($_GET['catid'])?$catid=$_GET['catid']:$catid=null;
-	isset($_GET['wc'])?$wc=$_GET['wc']:$wc=null;
+	if(isset($_GET['catid']))
+	{
+		$catid=(int)($_GET['catid']);
+		if(null==$catid);
+	}
+	else
+	{
+		$catid=null;
+	}
+	if(isset($_GET['wc']))
+	{
+		$wc=(int)($_GET['wc']);
+		if(null==$wc);
+	}
+	else
+	{
+		$wc=null;
+	}
 	
 	$sql = "select * from pictoword_cate";
 	$cate = mysql_query($sql);
-	$sql = "select * from pictoword order by id desc";
+	
+	$sql = "select * from pictoword";
+	if(null!=$wc || null!=$catid || null!=$kw)
+		$sql.=" where ";
+	if(null!=$wc)
+		$sql.=" CHAR_LENGTH(answer)=$wc and";
+	if(null!=$catid)
+		$sql.=" cate_id=$catid and";
+	if(null!=$kw)
+	{
+		$kw = addslashes($kw);
+		$sql.= " (answer like '%$kw%' or description like '%$kw%' or intro like '%$kw%') and";
+		$kw = stripslashes($kw);
+	}
+	if(null!=$wc || null!=$catid || null!=$kw)
+		$sql.=" 1=1 order by id desc";
+	else
+		$sql.=" order by id desc";
+	echo $sql;
 	$data = mysql_query($sql);
 	
-	
-	
+	$query =$_SERVER["QUERY_STRING"];
+	parse_str($query);
 	
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -29,11 +67,11 @@
 <link rel="stylesheet" type="text/css" media="all" href="static/960.css" />
 <link rel="stylesheet" type="text/css" media="all" href="static/demo.css" />
 <link rel="stylesheet" type="text/css" media="all" href="static/base.css" />
-<link href="static/jquery.lightbox-0.5.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" media="all" href="static/jquery.lightbox-0.5.css"/>
 <script language="javascript" type="text/javascript" src="static/jquery.js"></script>
 <script language="javascript" type="text/javascript" src="static/jquery.lightbox-0.5.js"></script>
-<script language="javascript" src="lib/kindeditor/kindeditor.js"></script>
-<script language="javascript" src="lib/kindeditor/lang/zh_CN.js"></script>
+<script language="javascript" type="text/javascript" src="lib/kindeditor/kindeditor.js"></script>
+<script language="javascript" type="text/javascript" src="lib/kindeditor/lang/zh_CN.js"></script>
 
 <title>疯狂猜图 答案查询 答案大全</title>
 </head>
@@ -56,7 +94,10 @@
 			<div class="location">
 				<span>当前位置：<span><a href="index.php">首页</a> >> 
 				<form method="get" action="index.php">
+					<input type="hidden" name="catid" value="<?php echo $catid ?>" />
+					<input type="hidden" name="wc" value="<?php echo $wc ?>" />
 					<input type="text" name="kw" placeholder="输入关键字搜索" value="<?php echo $kw?>"/><input type="submit" value="搜索"/>
+					<a href="<?php echo uri($catid, $wc, '') ?>">重置关键字</a> | <a href="<?php echo uri('', '', '') ?>">清空所有搜索条件</a>
 				</form>
 			</div>
 		</div>
@@ -66,22 +107,31 @@
 			<table>
 				<tr><td>按分类查找：</td>
 				<td class="searchlist"><ul>
+					<li<?php if($catid == ''){ echo ' class="selected"' ?>>全部</li>
+					<?php } else { ?>
+						<li><a href="<?php echo uri('', $wc, $kw) ?>">全部</a></li>
+					<?php } ?>		
 					<?php
 					while($cateArr = mysql_fetch_assoc($cate))
 					{
-						echo "<li><a href=index.php?catid=$cateArr[id]>".$cateArr['name']."</a></li>\n";
+						if($catid == $cateArr['id'])
+							echo "<li class=\"selected\">$cateArr[name]</li>\n";
+						else
+							echo "<li><a href=".uri($cateArr['id'], $wc, $kw).">".$cateArr['name']."</a></li>\n";
 					}
 					?></ul>
 				</td></tr>
 				<tr><td>按字数查找：</td>
 				<td class="searchlist"><ul>
-					<li><a href="index.php?wc=2">2个字</a></li>
-					<li><a href="index.php?wc=3">3个字</a></li>
-					<li><a href="index.php?wc=4">4个字</a></li>
-					<li><a href="index.php?wc=5">5个字</a></li>
-					<li><a href="index.php?wc=6">6个字</a></li>
-					<li><a href="index.php?wc=7">7个字</a></li>
-					<li><a href="index.php?wc=8">8个字</a></li>
+					<li <?php if($wc=='') { echo ' class="selected"' ?>>全部</li>
+					<?php } else { ?>
+						<li><a href="<?php echo uri($catid, '', $kw) ?>">全部</a></li>
+					<?php } ?>
+					<?php for($i=2;$i<=8;$i++){ ?>
+					<li <?php if($i==$wc) { echo ' class="selected"'; ?>><?php echo $i; ?>个字</li>
+					<?php } else { ?>
+						<li><a href="<?php echo uri($catid, $i, $kw); ?>"><?php echo $i; ?>个字</a></li>
+					<?php }} ?>
 				</td></tr>
 				
 			</table>
