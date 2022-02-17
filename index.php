@@ -51,7 +51,7 @@ function uri($catid, $wc, $kw)
 		$sql.=" 1=1 order by id desc";
 	else
 		$sql.=" order by id desc";
-	echo $sql;
+	//echo $sql;
 	$data = mysql_query($sql);
 	
 	$query =$_SERVER["QUERY_STRING"];
@@ -62,6 +62,7 @@ function uri($catid, $wc, $kw)
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="referrer" content="no-referrer" />
 <link rel="stylesheet" type="text/css" media="all" href="static/reset.css" />
 <link rel="stylesheet" type="text/css" media="all" href="static/text.css" />
 <link rel="stylesheet" type="text/css" media="all" href="static/960.css" />
