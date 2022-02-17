@@ -24,6 +24,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="referrer" content="no-referrer" />
 <link rel="stylesheet" type="text/css" media="all" href="static/reset.css" />
 <link rel="stylesheet" type="text/css" media="all" href="static/text.css" />
 <link rel="stylesheet" type="text/css" media="all" href="static/960.css" />
